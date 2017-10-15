@@ -10,7 +10,7 @@
 #include "engine.h"
 #include "frameGenerator.h"
 
-Engine::~Engine() { 
+Engine::~Engine() {
   delete star;
   delete spinningStar;
   std::cout << "Terminating program" << std::endl;
@@ -22,24 +22,33 @@ Engine::Engine() :
   clock( Clock::getInstance() ),
   renderer( rc->getRenderer() ),
   world("back", Gamedata::getInstance().getXmlInt("back/factor") ),
+  rocks("rocks", Gamedata::getInstance().getXmlInt("rocks/factor") ),
+  clouds1("clouds1", Gamedata::getInstance().getXmlInt("clouds1/factor") ),
+  ground("ground", Gamedata::getInstance().getXmlInt("ground/factor") ),
   viewport( Viewport::getInstance() ),
   star(new Sprite("YellowStar")),
   spinningStar(new MultiSprite("SpinningStar")),
   currentSprite(0),
   makeVideo( false )
 {
-  
+
   Viewport::getInstance().setObjectToTrack(star);
   std::cout << "Loading complete" << std::endl;
 }
 
 void Engine::draw() const {
   world.draw();
-
+  clouds1.draw();
+  rocks.draw();
+  ground.draw();
   star->draw();
   spinningStar->draw();
 
   viewport.draw();
+  std::stringstream str;
+  str << "fps: " << clock.getFps();
+  IOmod::getInstance().writeText(str.str(), 30, 420, {0, 0, 255, 0});
+  IOmod::getInstance().writeText("pbharad", 30, 440, {0, 0, 255, 0});
   SDL_RenderPresent(renderer);
 }
 
@@ -47,6 +56,9 @@ void Engine::update(Uint32 ticks) {
   star->update(ticks);
   spinningStar->update(ticks);
   world.update();
+  clouds1.update();
+  rocks.update();
+  ground.update();
   viewport.update(); // always update viewport last
 }
 

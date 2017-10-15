@@ -12,7 +12,8 @@ public:
   ~Engine ();
   void play();
   void switchSprite();
-
+  Engine(const Engine&) = delete;
+  Engine& operator=(const Engine&) = delete;
 private:
   const RenderContext* rc;
   const IOmod& io;
@@ -20,6 +21,9 @@ private:
 
   SDL_Renderer * const renderer;
   World world;
+  World rocks;
+  World clouds1;
+  World ground;
   Viewport& viewport;
 
   Drawable* star;
@@ -31,8 +35,6 @@ private:
   void draw() const;
   void update(Uint32);
 
-  Engine(const Engine&);
-  Engine& operator=(const Engine&);
   void printScales() const;
   void checkForCollisions();
 };

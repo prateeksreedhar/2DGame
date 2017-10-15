@@ -17,15 +17,33 @@
 </view>
 
 <world>
-  <width>2000</width>
-  <height>800</height>
+  <width>2600</width>
+  <height>480</height>
 </world>
 
 <back>
-  <file>assets/bg32.xcf</file>
-  <factor>1</factor>
+  <file>assets/sky.png</file>
+  <factor>10</factor>
   <transparency>false</transparency>
 </back>
+
+<clouds1>
+  <file>assets/clouds_1.png</file>
+  <factor>8</factor>
+  <transparency>true</transparency>
+</clouds1>
+
+<rocks>
+  <file>assets/rocks.png</file>
+  <factor>4</factor>
+  <transparency>true</transparency>
+</rocks>
+
+<ground>
+  <file>assets/ground.png</file>
+  <factor>1</factor>
+  <transparency>true</transparency>
+</ground>
 
 <font name="font">
   <file>fonts/arial.ttf</file>
