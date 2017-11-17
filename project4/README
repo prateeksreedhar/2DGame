@@ -1,0 +1,44 @@
+Name: Prateek Sreedhar Bharadwaj
+
+Course: CPSC 6160 - Data Driven 2D Game Development with C++
+
+Clemson Email Address: pbharad@clemson.edu
+
+Project no: 4
+
+Project due date: 11/13/2017
+
+Project description: Adding player, collision strategies, AI, Hud
+
+The easiest part of this project: Writing HUD class
+
+Problems that I had in completing this project: Making the HUD reconfigurable, understanding of observer patterns 
+
+Requirements satisfied:
+
+1) Incorporate a player object into your animation (encapsulated); use asdw to control the player.
+As seen in player.h and player.cpp
+
+2) Build a HUD that is reconfigurable through modifications to your XML file. The Hud should be encapsulated in a class that you design and implement. The HUD should appear for a few seconds when the game begins, and the player should be able to toggle the HUD with F1.
+As seen in hud.h and hud.cpp and XML tags <hud> and <hudColor>
+	
+
+3) Collision detection and AI. Some of your sprites should be smart and react to the player when the player gets close. Use the observer pattern to enable the player to notify NPCs of its position.
+All the three collision techniques are incorporated and can be switched using key M.  
+
+4) Your name printed clearly (font color/size) in lower left screen.
+As seen in video pbharad.mp4
+
+5) video: pbharad.mp4
+
+6) In your README for this project, include a paragraph that describes the game level that you would like to build for your final project. Provide some details about actions in the game, your sprite source, how you will keep score, and how the game will conclude.
+
+I would like my game to start off with Sasuke(character name) running and battling other characters that I will add in future projects. Killing each character earns more points and if the opponent is collided with the player, the game will conclude. The player can use different weapons like knife, lightning etc. 
+	
+
+Sprite Resources:
+
+	Sasuke -> https://www.pinterest.com/pin/357754764123848387
+	Background -> https://opengameart.org/content/horizontal-2d-backgrounds
+	Ball -> http://answers.unity3d.com/storage/attachments/18210-ball.png
+	Shuriken -> http://spritedatabase.net/file/14715
