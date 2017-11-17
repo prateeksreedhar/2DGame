@@ -1,0 +1,76 @@
+Name: Prateek Sreedhar Bharadwaj
+
+Course: CPSC 6160 - Data Driven 2D Game Development with C++
+
+Clemson Email Address: pbharad@clemson.edu
+
+Project no: 3
+
+Project due date: 10/20/2017
+
+Project description: Tracking a Sprite, Multisprite and TwoWayMultipSprite
+
+The easiest part of this project: Conversion of loops
+
+Problems that I had in completing this project: Segmentation faults due to incorrect partitioning of frames, memory leaks due to non deletion of sprites vector and tracking more than two sprites.
+
+Requirements satisfied:
+
+1) Conversion of while loops to ranged for loops(ParseXML::displayData(), Gamedata::displayData())
+
+	parseXML.cpp ->  Lines 38 to 41
+	gamedata.cpp ->  Lines 75 to 77
+
+2) Convert the first 3 ranged for loops in the ImageFactory destructor to while loops without using auto.
+
+	imageFactory.cpp -> Lines 13 to 30
+
+3) Convert ImageFactory from a GoF singleton into a Meyers singleton.
+
+	Can be verified in imageFactory.h and imageFactory.cpp
+
+4) Use IOmod and C ++ stringstreams to write the fps of your game to the screen, and write your name
+in the lower left corner of the screen.
+
+	engine.cpp -> Lines 54 to 57
+
+5) Add generality to IOmod by permitting the user to write text in a different color font.
+
+	ioMod.h -> Line 12
+	ioMod.cpp -> Line 51
+
+6) Parallax Scrolling
+	Can be verified from the animation
+
+7) Use delete to “explicitly disallow compiler generated functions” in Engine , and ImageFactory .
+
+	engine.h -> Lines 16-17
+	imageFactory.h -> Lines 17-18
+
+8) Convert the current tracker framework into a coherent animation, using as many sprites as you need.
+Store all sprites in a polymorphic vector of Drawable*.
+
+	Coherent animation -> As seen in the video pbharad.mp4
+	Storing Sprites : 
+	engine.h -> Line 29
+	engine.cpp -> Lines 21 to 25
+
+9) Extend your animation, and this vector, to contain a third type of spite: a two-way multi-frame sprite.
+
+	twoWayMultisprite.h
+	twoWayMultisprite.cpp
+
+10) Your submission must contain no memory leaks in user code.
+
+	Verified with valgrind
+
+11) A video of your animation.
+
+	Name of the video: pbharad.mp4. I used Simple Screen Recorder.
+
+Sprite Resources:
+
+	Sasuke -> https://www.pinterest.com/pin/357754764123848387
+	Background -> https://opengameart.org/content/horizontal-2d-backgrounds
+	Ball -> http://answers.unity3d.com/storage/attachments/18210-ball.png
+	Shuriken -> http://spritedatabase.net/file/14715
