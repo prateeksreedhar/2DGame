@@ -1,7 +1,6 @@
-// Brian Malloy        Data-Driven Object oriented Game Construction
+// Prateek Sreedhar Bharadwaj        Data-Driven Object oriented Game Construction
 #include "engine.h"
 
-//ImageFactory*  ImageFactory::instance = NULL;
 RenderContext* RenderContext::instance = NULL;
 
 int main(int, char*[]) {

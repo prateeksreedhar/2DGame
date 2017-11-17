@@ -33,19 +33,11 @@ void ParseXML::parseXML() {
   }
 }
 
-// void ParseXML::displayData() const {
-//   std::map<string, string>::const_iterator ptr = xmlData.begin();
-//   while ( ptr != xmlData.end() ) {
-//     std::cout << '(' << ptr->first << ", "
-//                      << ptr->second << ')' << std::endl;
-//     ++ptr;
-//   }
-// }
 
 void ParseXML::displayData() const {
-  for ( auto x : xmlData ) {
-    std::cout << '(' << x.first << ", "
-                     << x.second << ')' << std::endl;
+  for ( auto data : xmlData ) {
+    std::cout << '(' << data.first << ", "
+                     << data.second << ')' << std::endl;
   }
 }
 

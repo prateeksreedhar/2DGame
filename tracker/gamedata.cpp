@@ -71,16 +71,8 @@ const string& Gamedata::getXmlStr(const string& tag) const {
   else return ptr->second;
 }
 
-// void Gamedata::displayData() const {
-//   map<std::string, std::string>::const_iterator ptr =
-//     gameData.begin();
-//   while ( ptr != gameData.end() ) {
-//     std::cout << ptr->first << ", " << ptr->second << std::endl;
-//     ++ptr;
-//   }
-
 void Gamedata::displayData() const {
-  for ( auto x : gameData ) {
-    std::cout << x.first << ", " << x.second << std::endl;
+  for ( auto data : gameData ) {
+    std::cout << data.first << ", " << data.second << std::endl;
   }
 }

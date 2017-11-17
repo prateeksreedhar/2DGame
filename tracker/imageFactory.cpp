@@ -15,11 +15,7 @@ ImageFactory::~ImageFactory() {
     SDL_FreeSurface(ptr->second);
     ++ptr;
   }
-  // for(auto& ti : textures) SDL_DestroyTexture(ti.second);
-  // for(auto& fi : images  ) {
-  //   std::cout << "deleting " << fi.first << std::endl;
-  //   delete fi.second;
-  // }
+
   std::map<std::string, SDL_Texture*>::iterator texturePtr = textures.begin();
   while ( texturePtr != textures.end() ) {
     SDL_DestroyTexture(texturePtr->second);

@@ -18,7 +18,6 @@ public:
   ImageFactory& operator=(const ImageFactory&) = delete;
 
 private:
-  //static ImageFactory* instance;
   const Gamedata& gdata;
 
   std::map<std::string, SDL_Surface*> surfaces;
