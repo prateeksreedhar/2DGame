@@ -4,6 +4,7 @@
 #include <vector>
 #include <cmath>
 #include "drawable.h"
+#include "explodingSprite.h"
 
 class MultiSprite : public Drawable {
 public:
@@ -26,6 +27,8 @@ public:
     return images[currentFrame]->getSurface();
   }
 
+  virtual void explode();
+  virtual bool getExplosionFlag(){return explosionFlag;}
 protected:
   std::vector<Image *> images;
 
@@ -35,7 +38,8 @@ protected:
   float timeSinceLastFrame;
   int worldWidth;
   int worldHeight;
-
+  ExplodingSprite* explosion;
+  bool explosionFlag;
   void advanceFrame(Uint32 ticks);
   MultiSprite& operator=(const MultiSprite&);
 };

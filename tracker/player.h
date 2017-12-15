@@ -18,8 +18,12 @@ public:
   void up();
   void down();
   void stop();
+
 private:
   bool collision;
   Vector2f initialVelocity;
+  bool jumpFlag;
+  int jumpInc;
+
 };
 #endif

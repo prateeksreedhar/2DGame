@@ -4,8 +4,6 @@
 #include <string>
 #include <random>
 #include <iomanip>
-#include "smartSprite.h"
-#include "subjectSprite.h"
 #include "sprite.h"
 #include "multisprite.h"
 #include "gamedata.h"
@@ -13,49 +11,64 @@
 #include "frameGenerator.h"
 #include "twoWayMultisprite.h"
 #include "player.h"
-#include "collisionStrategy.h"
+#include <SDL.h>
 
 Engine::~Engine() {
   delete player;
+  delete player2;
   for(auto sprite : sprites){
     delete sprite;
   }
-  for(auto sprite : normalSprites){
-    delete sprite;
-  } 
+  
   for ( CollisionStrategy* strategy : strategies ) {
     delete strategy;
+  }
+  for(auto paint : painter){
+    delete paint;
   }
   std::cout << "Terminating program" << std::endl;
 }
 
-void Engine::initializeSprites(){
-  normalSprites.push_back(new MultiSprite("shuriken"));
-}
+class SpriteLess {
+public:
+  bool operator()(const Drawable* lhs, const Drawable* rhs) const {
+    return lhs->getScale() < rhs->getScale();
+  }
+};
 
 Engine::Engine() :
   rc( RenderContext::getInstance() ),
   io( IOmod::getInstance() ),
   clock( Clock::getInstance() ),
   renderer( rc->getRenderer() ),
-  sky("sky", Gamedata::getInstance().getXmlInt("sky/factor") ),
-  rocks("rocks", Gamedata::getInstance().getXmlInt("rocks/factor") ),
-  clouds("clouds", Gamedata::getInstance().getXmlInt("clouds/factor") ),
-  ground("ground", Gamedata::getInstance().getXmlInt("ground/factor") ),
+  layer1("layer1", Gamedata::getInstance().getXmlInt("layer1/factor")),
+  layer2("layer2", Gamedata::getInstance().getXmlInt("layer2/factor")),
+  layer3("layer3", Gamedata::getInstance().getXmlInt("layer3/factor")),
+  layer4("layer4", Gamedata::getInstance().getXmlInt("layer4/factor")),
+  layer5("layer5", Gamedata::getInstance().getXmlInt("layer5/factor")),
+  layer6("layer6", Gamedata::getInstance().getXmlInt("layer6/factor")),
+  layer7("layer7", Gamedata::getInstance().getXmlInt("layer7/factor")),
+  layer8("layer8", Gamedata::getInstance().getXmlInt("layer8/factor")),
   viewport( Viewport::getInstance() ),
   currentSprite(0),
   makeVideo( false ),
   currentStrategy(0),
   hud(Hud::getInstance()),
   strategies(),
-  player(new SubjectSprite("sasukeRun", "sasukeRunReverse")),
+  player(new SubjectSprite("sasukeRun")),
+  player2(new EnemySprite("sasuRunReverse")),
   sprites(),
   collision(false),
-  normalSprites(),
-  hudFlag(false)
-  
+  hudFlag(false),
+  shootFlag(false),
+  sound(),
+  godMode(false),
+  healthCount(100),
+  enemyHealthCount(100),
+  painter(),
+  delay(0),
+  enemyDead(false)
 {
-  initializeSprites();
   int numberOfBalls = Gamedata::getInstance().getXmlInt("numberOfBalls");
   sprites.reserve(numberOfBalls);
   Vector2f pos = player->getPosition();
@@ -70,50 +83,197 @@ Engine::Engine() :
   strategies.push_back( new MidPointCollisionStrategy );
   Viewport::getInstance().setObjectToTrack(player);
   std::cout << "Loading complete" << std::endl;
+
+  unsigned int numberForPainter = Gamedata::getInstance().getXmlInt("numberForPainter");
+  for ( unsigned int i = 0; i < numberForPainter; ++i ) {
+    Drawable* s = new Sprite("Aeroplane");
+    float scale = Gamedata::getInstance().getRandFloat(0.05,0.2);
+    s->setScale(scale);
+    painter.push_back(s);
+  }
+  std::vector<Drawable*>::iterator ptr = painter.begin();
+  ++ptr;
+  sort(ptr, painter.end(), SpriteLess());
+}
+
+void Engine::printScales() const {
+  for (Drawable* s : sprites) {
+    std::cout << s->getScale() << std::endl;
+  }
 }
 
 void Engine::draw() const {
-  sky.draw();
-  clouds.draw();
-  rocks.draw();
-  ground.draw();
+  layer8.draw();
+  for(unsigned int i=0;i<painter.size()/3;i++){
+    painter[i]->draw();
+  }
+  layer7.draw();
+  for(unsigned int i=(painter.size()/3)+1;i<painter.size()*2/3;i++){
+    painter[i]->draw();
+  }
+  layer6.draw();
+  for(unsigned int i=(painter.size()*2/3)+1;i<painter.size();i++){
+    painter[i]->draw();
+  }
+  layer5.draw();
+  layer4.draw();
+  layer3.draw();
+  layer2.draw();
+  layer1.draw();
+  std::stringstream bulletlist; 
+  bulletlist<< player->getBulletListSize();
+  std::stringstream freelist; 
+  freelist<< player->getFreeListSize();
+  std::string bl="BULLETLIST: "+bulletlist.str();
+  std::string fl="FREELIST: "+freelist.str();
   
   for(auto sprite : sprites){
     sprite->draw();
   }
   std::stringstream strm;
   strm << sprites.size() << " Smart Sprites Remaining";
-  IOmod::getInstance().writeText(strm.str(), 580, 60, {100, 250, 250, 0});
-  for(auto it : normalSprites){
-    it->draw();
-  }
-  strategies[currentStrategy]->draw();
-  if ( collision ) {
-    IOmod::getInstance().writeText("Oops: Collision", 600, 40, {0,0,255,0});
-  }
+  //IOmod::getInstance().writeText(strm.str(), 600, 95, {100, 250, 250, 0});
+  //strategies[currentStrategy]->draw();
   player->draw();
+  if(player2->getExplosionFlag()==false && player2!=NULL){
+    player2->draw();
+  }
   viewport.draw();
   std::stringstream str;
   str << "Fps: " << clock.getFps();
   if(clock.getSeconds() <= 3 || hudFlag){
     hud.draw();
+    hud.drawLists(bl,fl);
   }
-  IOmod::getInstance().writeText("Prateek Sreedhar Bharadwaj", 30, 440, {0, 255, 0, 0});
-  SDL_RenderPresent(renderer);
+  //Health of my player
+
+  IOmod::getInstance().writeText("Player Health", 619, 49, {0, 0, 0, 255});
+  const SDL_Rect pBorder = {619, 79, 102, 22};
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_RenderDrawRect(renderer,&pBorder);
+  if(healthCount>0){
+  const SDL_Rect q = {620, 80, healthCount, 20};
+  SDL_RenderDrawRect(renderer, &q);
+  if(healthCount>50){
+    SDL_SetRenderDrawColor(renderer, 0, 253, 0, 255);
+  }else{
+    SDL_SetRenderDrawColor(renderer, 253, 0, 0, 255);
+  }
+  SDL_RenderFillRect(renderer, &q);
+    
 }
 
+  //Health of enemy
+
+  IOmod::getInstance().writeText("Enemy Health", 619, 119, {0, 0, 0, 255});
+  const SDL_Rect eBorder = {619, 149, 102, 22};
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_RenderDrawRect(renderer,&eBorder);
+  if(enemyHealthCount>0){
+  const SDL_Rect r = {620, 150, enemyHealthCount, 20};
+  SDL_RenderDrawRect(renderer, &r);
+  if(enemyHealthCount>50){
+    SDL_SetRenderDrawColor(renderer, 255, 0, 200, 255);
+  }else{
+    SDL_SetRenderDrawColor(renderer, 255, 200, 255, 255);
+  }
+  SDL_RenderFillRect(renderer, &r);
+  }
+  IOmod::getInstance().writeText("Prateek Sreedhar Bharadwaj", 30, 440, {0, 255, 0, 0});
+
+  //Condition for game conclusion
+
+  if(healthCount <= 0){
+  IOmod::getInstance().writeText("GAME OVER.. PRESS R TO RESTART", 300, 100, {255, 255, 0, 0});
+    clock.pause();
+  }
+
+  if(enemyHealthCount <=0){
+  IOmod::getInstance().writeText("You Win.. PRESS R TO RESTART", 300, 100, {255, 255, 0, 0});
+    clock.pause();
+  }
+
+  if(godMode){
+    IOmod::getInstance().writeText("GOD MODE", 619, 19, {100, 250, 250, 0});
+  }
+  
+    SDL_RenderPresent(renderer);
+}
+
+void Engine::checkforEnemyCollision(){
+  collision = false;
+  std::list<Bullet> bulletlist = player2->getBulletList();
+  for ( const Bullet d : bulletlist ) {
+    //Check for enemy bullet or enemy
+
+    if ( strategies[currentStrategy]->execute(*player, d) || strategies[currentStrategy]->execute(*player, *player2)) {
+      collision = true;
+      if(!godMode){
+        healthCount-=1;
+        if(healthCount<2){
+          player->explode();
+        }
+      }
+      sound[0];
+    }
+  }
+
+    if(enemyHealthCount<1){
+      enemyDead = true;
+      if(player2!=NULL){
+        std::cout<<"Explode sasu";
+        player2->explode();
+      }
+    }
+
+  if(player2!=NULL&&player2->getExplosionFlag()){
+    delete player2;
+    player2 = NULL;
+    return;
+  }
+}
 void Engine::checkForCollisions() {
   collision = false;
+  std::list<Bullet> bulletlist = player->getBulletList();
   for ( const Drawable* d : sprites ) {
     if ( strategies[currentStrategy]->execute(*player, *d) ) {
       collision = true;
+      if(!godMode){
+        healthCount-=1;
+        if(healthCount<2){
+          player->explode();
+        }
+      }
+      sound[0];
     }
   }
-  for ( const Drawable* d : normalSprites ) {
-    if ( strategies[currentStrategy]->execute(*player, *d) ) {
-      collision = true;
+
+  for(const auto d : bulletlist)
+  {
+  std::vector<SmartSprite*>::iterator it = sprites.begin();
+    while(it !=sprites.end()){
+      if(strategies[currentStrategy]->execute(**it, d)){
+        (*it)->explode();
+      }
+      ++it;
+    }
+    if(strategies[currentStrategy]->execute(*player2, d)){
+      enemyHealthCount-=1;
     }
   }
+  std::vector<SmartSprite*>::iterator it1 = sprites.begin();
+  while(it1 !=sprites.end()){
+      if((*it1)->getExplode()){
+        SmartSprite* doa = *it1;
+        player->detach(doa);
+        delete doa;
+        it1 = sprites.erase(it1);
+      }else{
+        ++it1;
+      }
+      
+    }
+
   if ( collision ) {
     player->collided();
   }
@@ -121,31 +281,46 @@ void Engine::checkForCollisions() {
     player->missed();
     collision = false;
   }
-  auto it = sprites.begin();
-  while ( it != sprites.end() ) {
-    if ( strategies[currentStrategy]->execute(*player, **it) ) {
-      SmartSprite* doa = *it;
-      player->detach(doa);
-      delete doa;
-      it = sprites.erase(it);
-    }
-    else ++it;
-  }
+
 }
 
 void Engine::update(Uint32 ticks) {
   checkForCollisions();
+  checkforEnemyCollision();
   player->update(ticks);
+  if(player2!=NULL)
+  {player2->update(ticks);}
+
+  if(delay <= 10){
+    delay++;
+  }else{
+    delay = 0;
+    if(player2!=NULL)
+    {player2->shoot();}
+  }
+  
   for(auto sprite : sprites){
     sprite->update(ticks);
   }
-  for(auto it: normalSprites){
-    it->update(ticks);
+ 
+  //for(auto* s : painter) s->update(ticks);
+  for(unsigned int i=0;i<painter.size()/3;i++){
+    painter[i]->update(ticks);
   }
-  sky.update();
-  clouds.update();
-  rocks.update();
-  ground.update();
+  for(unsigned int i=(painter.size()/3)+1;i<painter.size()*2/3;i++){
+    painter[i]->update(ticks);
+  }
+  for(unsigned int i=(painter.size()*2/3)+1;i<painter.size();i++){
+    painter[i]->update(ticks);
+  }
+  layer8.update();
+  layer7.update();
+  layer6.update();
+  layer5.update();
+  layer4.update();
+  layer3.update();
+  layer2.update();
+  layer1.update();
   viewport.update(); // always update viewport last
 }
 
@@ -165,7 +340,7 @@ void Engine::switchSprite(){
 
 
 
-void Engine::play() {
+bool Engine::play() {
   SDL_Event event;
   const Uint8* keystate;
   bool done = false;
@@ -186,9 +361,31 @@ void Engine::play() {
           if ( clock.isPaused() ) clock.unpause();
           else clock.pause();
         }
+        if ( keystate[SDL_SCANCODE_R] ) {
+          clock.unpause();
+          return true;
+        }
+        if( keystate[SDL_SCANCODE_G] ){
+          if(godMode){
+            godMode = false;
+          }else{
+            godMode = true;
+          }
+        }
+         if ( keystate[SDL_SCANCODE_SPACE] ) {
+          sound[1];
+          if(shootFlag){
+            static_cast<ShootingSprite*>(player)->shoot();
+          }else{
+          static_cast<ShootingSprite*>(player)->shootRight();
+          }
+        }
         if( keystate[SDL_SCANCODE_F1]){
           if(hudFlag) hudFlag = false;
           else hudFlag = true;
+        }
+        if( keystate[SDL_SCANCODE_E] ){
+          player->explode();
         }
         if ( keystate[SDL_SCANCODE_M] ) {
           currentStrategy = (1 + currentStrategy) % strategies.size();
@@ -209,9 +406,11 @@ void Engine::play() {
     if ( ticks > 0 ) {
       clock.incrFrame();
       if (keystate[SDL_SCANCODE_A]) {
+        shootFlag = true;
         player->left();
       }
       if (keystate[SDL_SCANCODE_D]) {
+        shootFlag = false;
         player->right();
       }
       if (keystate[SDL_SCANCODE_W]) {
@@ -227,4 +426,5 @@ void Engine::play() {
       }
     }
   }
+  return false;
 }

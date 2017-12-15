@@ -11,13 +11,14 @@
 <maxFrames>300</maxFrames>
 <username>pbharad</username>
 <numberOfBalls>10</numberOfBalls>
+<numberForPainter>20</numberForPainter>
 <view>
   <width>854</width>
   <height>480</height>
 </view>
 
 <world>
-  <width>1500</width>
+  <width>5500</width>
   <height>480</height>
 </world>
 
@@ -55,28 +56,98 @@
 </font>
 
 <sasukeRun>
-  <file>assets/sasuke_runs.png</file>
-  <startLoc x="50" y="380"/>
-  <frames>3</frames>
-  <imageWidth>100</imageWidth>
-  <imageHeight>101</imageHeight>
-  <frameInterval>130</frameInterval>
+  <file>assets/naru.png</file>
+  <startLoc x="50" y="250"/>
+  <bullet>raybeam</bullet>
+  <frames>6</frames>
+  <imageWidth>96</imageWidth>
+  <imageHeight>146</imageHeight>
+  <frameInterval>96</frameInterval>
   <speedX>200</speedX>
-  <speedY>200</speedY>
-  <transparency>false</transparency>
+  <speedY>0</speedY>
+  <transparency>true</transparency>
+  <chunk>
+    <size>30</size>
+    <distance>50</distance>
+  </chunk>
 </sasukeRun>
 
 <sasukeRunReverse>
-  <file>assets/sasuke_runs_reverse.png</file>
-  <startLoc x="50" y="380"/>
+  <file>assets/naruRev.png</file>
+  <startLoc x="50" y="250"/>
+  <bullet>raybeam</bullet>
+  <frames>6</frames>
+  <imageWidth>96</imageWidth>
+  <imageHeight>146</imageHeight>
+  <frameInterval>96</frameInterval>
+  <speedX>200</speedX>
+  <speedY>0</speedY>
+  <transparency>true</transparency>
+  <chunk>
+    <size>30</size>
+    <distance>50</distance>
+  </chunk>
+</sasukeRunReverse>
+
+<sasuRun>
+  <file>assets/sasuke_runs.png</file>
+  <startLoc x="50" y="290"/>
+  <bullet>raybeam</bullet>
   <frames>3</frames>
   <imageWidth>100</imageWidth>
   <imageHeight>101</imageHeight>
   <frameInterval>130</frameInterval>
   <speedX>200</speedX>
-  <speedY>200</speedY>
+  <speedY>0</speedY>
   <transparency>false</transparency>
-</sasukeRunReverse>
+  <chunk>
+    <size>30</size>
+    <distance>50</distance>
+  </chunk>
+</sasuRun>
+
+<sasuRunReverse>
+  <file>assets/sasuke_runs_reverse.png</file>
+  <startLoc x="5000" y="290"/>
+  <frames>3</frames>
+  <imageWidth>100</imageWidth>
+  <imageHeight>101</imageHeight>
+  <bullet>bullet1</bullet>
+  <frameInterval>130</frameInterval>
+  <speedX>100</speedX>
+  <speedY>100</speedY>
+  <transparency>false</transparency>
+  <chunk>
+    <size>30</size>
+    <distance>50</distance>
+  </chunk>
+</sasuRunReverse>
+
+<raybeam>
+  <file>assets/bullet.png</file>
+<interval>300</interval>
+<distance>320</distance>
+<startLoc x="100" y="100"/>
+<minSpeedX>280</minSpeedX>
+<speedX>280</speedX>
+<speedY>0</speedY>
+<strategy>rectangular</strategy>
+<transparency>true</transparency>
+</raybeam>
+
+<bullet1>
+  <file>assets/bullet1.png</file>
+<interval>300</interval>
+<distance>320</distance>
+<startLoc x="100" y="100"/>
+<minSpeedX>200</minSpeedX>
+<speedX>100</speedX>
+<speedY>0</speedY>
+<strategy>rectangular</strategy>
+<transparency>true</transparency>
+</bullet1>
+
+
 
 <shuriken>
   <file>assets/shuriken.png</file>
@@ -85,23 +156,40 @@
   <imageWidth>33</imageWidth>
   <imageHeight>30</imageHeight>
   <frameInterval>150</frameInterval>
-  <safeDistance>75</safeDistance>
+  <safeDistance>175</safeDistance>
   <speedX>170</speedX>
   <speedY>0</speedY>
   <transparency>true</transparency>
+  <chunk>
+    <size>30</size>
+    <distance>50</distance>
+  </chunk>
 </shuriken>
 
 <ball>
-  <file>assets/ball.png</file>
-  <startLoc x="227" y="240"/>
-  <speedX>300</speedX>
-  <speedY>300</speedY>
+  <file>assets/gaara.png</file>
+  <startLoc x="727" y="322"/>
+  <speedX>100</speedX>
+  <speedY>0</speedY>
   <safeDistance>100</safeDistance>
   <transparency>false</transparency>
+  <chunk>
+    <size>20</size>
+    <distance>100</distance>
+  </chunk>
 </ball>
+
+<Aeroplane>
+  <file>assets/aeroplane.png</file>
+  <startLoc x="427" y="240"/>
+  <speedX>-75</speedX>
+  <speedY>-75</speedY>
+  <transparency>true</transparency>
+</Aeroplane>
+
 <hud>
-  <width>120</width>
-  <height>170</height>
+  <width>125</width>
+  <height>250</height>
   <xpos>24</xpos>
   <ypos>57</ypos>
   <text>Controls</text>
@@ -114,11 +202,60 @@
   <b>0</b>
   <a>0</a>
 </hud>
+
 <hudColor>
   <r>50</r>
   <g>50</g>
   <b>50</b>
   <a>150</a>
 </hudColor>
+
+<layer1>
+  <file>assets/layer_01_1920 x 1080.png</file>
+  <factor>1</factor>
+  <transparency>true</transparency>
+</layer1>
+
+<layer2>
+  <file>assets/layer_02_1920 x 1080.png</file>
+  <factor>4</factor>
+  <transparency>true</transparency>
+</layer2>
+
+<layer3>
+  <file>assets/layer_03_1920 x 1080.png</file>
+  <factor>7</factor>
+  <transparency>true</transparency>
+</layer3>
+
+<layer4>
+  <file>assets/layer_04_1920 x 1080.png</file>
+  <factor>10</factor>
+  <transparency>true</transparency>
+</layer4>
+
+<layer5>
+  <file>assets/layer_05_1920 x 1080.png</file>
+  <factor>13</factor>
+  <transparency>true</transparency>
+</layer5>
+
+<layer6>
+  <file>assets/layer_06_1920 x 1080.png</file>
+  <factor>16</factor>
+  <transparency>true</transparency>
+</layer6>
+
+<layer7>
+  <file>assets/layer_07_1920 x 1080.png</file>
+  <factor>19</factor>
+  <transparency>true</transparency>
+</layer7>
+
+<layer8>
+  <file>assets/layer_08_1920 x 1080.png</file>
+  <factor>22</factor>
+  <transparency>true</transparency>
+</layer8>
 
 </GameData>

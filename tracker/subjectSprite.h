@@ -7,12 +7,13 @@
 #include "multisprite.h"
 #include "twoWayMultisprite.h"
 #include "player.h"
+#include "shootingSprite.h"
 
 class SmartSprite;
 
-class SubjectSprite : public Player {
+class SubjectSprite : public ShootingSprite {
 public:
-  SubjectSprite(const std::string&, const std::string&);
+  SubjectSprite(const std::string&);
   SubjectSprite(const SubjectSprite&);
 
   void update(Uint32 ticks);

@@ -13,6 +13,26 @@ Hud::~Hud(){
 	std::cout << "deleting hud" << std::endl;
 }
 
+void Hud::drawLists(const std::string& x,const std::string& y){
+	SDL_Color hudText;
+	SDL_Rect hudBorder;
+	hudBorder.x = gamedata.getXmlInt("hud/xpos");
+	hudBorder.y = gamedata.getXmlInt("hud/ypos");
+	hudBorder.w = gamedata.getXmlInt("hud/width");
+	hudBorder.h = gamedata.getXmlInt("hud/height");
+	hudText.r = gamedata.getXmlInt("hud/r");
+	hudText.g = gamedata.getXmlInt("hud/g");
+	hudText.b = gamedata.getXmlInt("hud/b");
+	hudText.a = gamedata.getXmlInt("hud/a");
+
+  	std::string bulletlist = x;
+  	std::string freelist = y;
+
+	io.writeText(x, hudBorder.x+=6, hudBorder.y+=170, hudText);
+  	io.writeText(y, hudBorder.x, 257, hudText);
+
+}
+
 Hud& Hud::getInstance(){
 	static Hud instance;
 	return instance;

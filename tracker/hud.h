@@ -7,6 +7,9 @@ class Hud {
 public:
 	~Hud();
 	void draw();
+	void drawLists(const std::string&,const std::string&);
+	
+
 	static Hud& getInstance();
 	Hud(const Hud& ) = delete;
 	Hud& operator=(const Hud& ) = delete;
